@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapeamento Comportamental 300</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E30613; --red-soft:#FDE7E8; --ink:#1F2328; --muted:#5E6670; --line:#E4E6EA;
+  --bg:#F6F7F9; --surface:#FFFFFF; --chip:#FFFFFF; --chip-text:#1F2328;
+  --d:#E30613; --i:#F2A900; --s:#2E9E6A; --c:#2F6FD6;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --red:#FF3B47; --red-soft:#3A1416; --ink:#ECEEF1; --muted:#A3AAB3; --line:#2E333A;
+    --bg:#15181C; --surface:#1D2126; --chip:#23282E; --chip-text:#ECEEF1; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --red:#FF3B47; --red-soft:#3A1416; --ink:#ECEEF1; --muted:#A3AAB3; --line:#2E333A;
+  --bg:#15181C; --surface:#1D2126; --chip:#23282E; --chip-text:#ECEEF1; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 "Source Sans 3",system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 60px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.logo{background:#E30613;color:#fff;font:900 26px/1 Montserrat,sans-serif;padding:14px 12px;letter-spacing:-1px}
+.brand{font:600 13px/1.25 Montserrat,sans-serif;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px}
+h1{font:800 clamp(28px,5vw,40px)/1.1 Montserrat,sans-serif;margin:0 0 14px;letter-spacing:-.5px}
+h2{font:700 22px/1.2 Montserrat,sans-serif;margin:0 0 10px}
+h3{font:700 16px/1.3 Montserrat,sans-serif;margin:22px 0 8px}
+p{margin:0 0 12px;max-width:62ch}
+.muted{color:var(--muted)}
+.btn{font:700 15px Montserrat,sans-serif;border:0;border-radius:10px;padding:13px 22px;cursor:pointer;background:var(--red);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:focus-visible,.opt:focus-visible{outline:3px solid var(--c);outline-offset:2px}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.progress>i{display:block;height:100%;background:var(--red);transition:width .25s}
+.qnum{font:700 15px Montserrat,sans-serif;color:var(--muted);margin-bottom:18px}
+.qnum b{color:var(--red)}
+.label{font-weight:600;margin:18px 0 10px}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:620px){.opts{grid-template-columns:repeat(2,1fr)}}
+.opt{font:600 14px Montserrat,sans-serif;background:var(--chip);color:var(--chip-text);border:1.5px solid var(--line);border-radius:10px;padding:14px 8px;cursor:pointer;min-height:54px}
+.opt.sel-mais{border-color:var(--red);background:var(--red-soft)}
+.opt.sel-menos{border-color:var(--muted);background:var(--line)}
+.opt:disabled{opacity:.35;cursor:not-allowed}
+.opt{position:relative}
+.opt[data-tip]:hover::after,.opt[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:max-content;max-width:220px;background:var(--ink);color:var(--surface);font:400 14px/1.35 "Source Sans 3",sans-serif;padding:8px 11px;border-radius:8px;z-index:5;pointer-events:none;text-align:left;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.opt[data-tip]:hover::before,.opt[data-tip]:focus-visible::before{content:"";position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink);z-index:5}
+.nav{display:flex;justify-content:space-between;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.err{color:var(--red);font-weight:600;min-height:1.5em;margin-top:12px}
+/* resultado */
+.headline{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;margin-bottom:26px}
+.code{font:900 clamp(56px,12vw,96px)/.9 Montserrat,sans-serif;letter-spacing:-3px;display:flex}
+.code span{display:inline-block}
+.chart{display:grid;grid-template-columns:28px repeat(4,1fr);gap:12px;align-items:end;height:250px;margin:10px 0 6px}
+.axis{display:flex;flex-direction:column-reverse;justify-content:space-between;height:100%;font:600 12px Montserrat,sans-serif;color:var(--muted);text-align:right}
+.col{height:100%;display:flex;flex-direction:column;justify-content:flex-end;position:relative;background:repeating-linear-gradient(to top,transparent 0,transparent calc(100%/7 - 1px),var(--line) calc(100%/7 - 1px),var(--line) calc(100%/7))}
+.col .mid{position:absolute;left:0;right:0;bottom:calc(400%/7);border-top:2px dashed var(--muted);opacity:.6}
+.bar{border-radius:6px 6px 0 0;transition:height .6s cubic-bezier(.2,.8,.2,1);display:flex;justify-content:center;align-items:flex-start;padding-top:6px;color:#fff;font:800 14px Montserrat,sans-serif}
+.legend{display:grid;grid-template-columns:28px repeat(4,1fr);gap:12px;text-align:center;font:700 13px Montserrat,sans-serif}
+.legend small{display:block;font:400 13px "Source Sans 3",sans-serif;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:15px;margin-top:8px}
+th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:center}
+th:first-child,td:first-child{text-align:left}
+th{font:700 13px Montserrat,sans-serif;color:var(--muted)}
+.scroll{overflow-x:auto}
+ul{margin:0;padding-left:20px}
+li{margin-bottom:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:620px){.grid2{grid-template-columns:1fr}.headline{grid-template-columns:1fr}}
+.note{font-size:14px;color:var(--muted);margin-top:22px;border-left:3px solid var(--line);padding-left:12px}
+@media (prefers-reduced-motion:reduce){.bar,.progress>i{transition:none}}
+.form{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+@media (max-width:620px){.form{grid-template-columns:1fr}}
+.form label{font:600 13px Montserrat,sans-serif;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.form input{font:400 16px "Source Sans 3",sans-serif;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.form input:focus-visible{outline:3px solid var(--c);outline-offset:1px}
+.info{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:22px}
+.who{display:flex;gap:14px;align-items:center}
+.who b{display:block;font:700 16px Montserrat,sans-serif}
+.who span,.when span{display:block;color:var(--muted)}
+.when{font-size:15px;max-width:220px}
+.when span{color:var(--c);margin-top:2px}
+.avatar{width:64px;height:64px;border-radius:14px;background:#E30613;color:#fff;display:grid;place-items:center;font:800 22px Montserrat,sans-serif;flex:none}
+.resbox{background:var(--red-soft);border-radius:18px;padding:24px 28px;margin-bottom:30px}
+.resbox p{font-size:20px;margin-bottom:10px}
+.resbox .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.resbox strong{font:800 clamp(26px,5vw,38px)/1.15 Montserrat,sans-serif}
+#app h2{margin-top:36px}
+h3.sub{font:600 20px Montserrat,sans-serif;margin-top:26px}
+.resumo{border-top:1px solid var(--line)}
+.rrow{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line)}
+.rrow b{font:700 15px Montserrat,sans-serif}
+@media (max-width:620px){.rrow{grid-template-columns:1fr;gap:2px}}
+.boxes{margin-top:20px}
+.box{border:1px solid var(--line);border-radius:12px;padding:4px 18px 8px}
+.segrow{display:grid;grid-template-columns:28px repeat(4,1fr);gap:12px;text-align:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.segrow span{grid-column:1/-1;font:600 13px Montserrat,sans-serif;color:var(--muted);text-align:left}
+.segrow b{font:800 20px Montserrat,sans-serif}
+.segrow b:nth-of-type(1){grid-column:2}
+h3.dimh{font-size:19px;margin-top:26px}
+details.calc{margin-top:30px;border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+details.calc summary{cursor:pointer;font:700 15px Montserrat,sans-serif}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">300</div>
+    <div class="brand">Ecossistema<br>300 franchising</div>
+  </header>
+  <main id="app" class="card" aria-live="polite"></main>
+</div>
+
+<script>
+// Banco de perguntas: cada opção tem a palavra e a dimensão (a ordem já vem embaralhada)
+const Q = [
+ [["Constante","S"],["Assertivo(a)","D"],["Criterioso(a)","C"],["Comunicativo(a)","I"]],
+ [["Organizado(a)","C"],["Carismático(a)","I"],["Objetivo(a)","D"],["Acolhedor(a)","S"]],
+ [["Espontâneo(a)","I"],["Tolerante","S"],["Meticuloso(a)","C"],["Resoluto(a)","D"]],
+ [["Rigoroso(a)","C"],["Ambicioso(a)","D"],["Compreensivo(a)","S"],["Inspirador(a)","I"]],
+ [["Ponderado(a)","S"],["Envolvente","I"],["Planejado(a)","C"],["Desafiador(a)","D"]],
+ [["Arrojado(a)","D"],["Racional","C"],["Simpático(a)","I"],["Conciliador(a)","S"]],
+ [["Técnico(a)","C"],["Estável","S"],["Proativo(a)","D"],["Expansivo(a)","I"]],
+ [["Popular","I"],["Minucioso(a)","C"],["Confiável","S"],["Prático(a)","D"]],
+ [["Atencioso(a)","S"],["Corajoso(a)","D"],["Contagiante","I"],["Investigativo(a)","C"]],
+ [["Formal","C"],["Articulado(a)","I"],["Destemido(a)","D"],["Sensato(a)","S"]],
+ [["Tranquilo(a)","S"],["Prudente","C"],["Sorridente","I"],["Ágil","D"]],
+ [["Criativo(a)","I"],["Pioneiro(a)","D"],["Correto(a)","C"],["Pacífico(a)","S"]],
+ [["Pontual","C"],["Bom(boa) ouvinte","S"],["Motivador(a)","I"],["Focado(a) em metas","D"]],
+ [["Dedicado(a)","S"],["Incisivo(a)","D"],["Estruturado(a)","C"],["Eloquente","I"]],
+ [["Reflexivo(a)","C"],["Desinibido(a)","I"],["Comprometido(a)","S"],["Combativo(a)","D"]],
+ [["Engraçado(a)","I"],["Cordial","S"],["Empreendedor(a)","D"],["Observador(a)","C"]],
+ [["Discreto(a)","C"],["Autônomo(a)","D"],["Vibrante","I"],["Harmonioso(a)","S"]],
+ [["Apoiador(a)","S"],["Coerente","C"],["Bom(boa) de conversa","I"],["Enfático(a)","D"]],
+ [["Influente","I"],["Pragmático(a)","D"],["Cético(a)","C"],["Empático(a)","S"]],
+ [["Precavido(a)","C"],["Despretensioso(a)","S"],["Tenaz","D"],["Encorajador(a)","I"]],
+ [["Acessível","S"],["Imaginativo(a)","I"],["Comedido(a)","C"],["Realizador(a)","D"]],
+ [["Impetuoso(a)","D"],["Ameno(a)","S"],["Agitado(a)","I"],["Concentrado(a)","C"]],
+ [["Leve","I"],["Profundo(a)","C"],["Questionador(a)","D"],["Companheiro(a)","S"]],
+ [["Segue procedimentos","C"],["Rápido(a) nas decisões","D"],["Sossegado(a)","S"],["Amigável","I"]],
+ [["Empolgado(a)","I"],["Fiel aos combinados","S"],["Atento(a) à qualidade","C"],["Protagonista","D"]],
+ [["Fundamentado(a)","C"],["Radiante","I"],["Ativo(a)","D"],["Brando(a)","S"]],
+ [["Amável","S"],["Taxativo(a)","D"],["Estudioso(a)","C"],["Festivo(a)","I"]],
+ [["Cheio(a) de ideias","I"],["Regrado(a)","C"],["Gosta de rotina","S"],["Convicto(a)","D"]]
+];
+
+// Palavras da linha "menos": diferentes das da linha "mais" (ordem D, I, S, C; embaralhadas abaixo)
+const MENOS_BASE = [
+ [["Dinâmico(a)","D"],["Conversador(a)","I"],["Educado(a)","S"],["Sério(a)","C"]],
+ [["Decisivo(a)","D"],["Interativo(a)","I"],["Plácido(a)","S"],["Cerimonioso(a)","C"]],
+ [["Estrategista","D"],["Esperançoso(a)","I"],["Perseverante","S"],["Pesquisador(a)","C"]],
+ [["Intenso(a)","D"],["Agregador(a)","I"],["Disponível","S"],["Autocrítico(a)","C"]],
+ [["Autoconfiante","D"],["Bom(boa) de palco","I"],["Simples","S"],["Especialista","C"]],
+ [["Visionário(a)","D"],["Inventivo(a)","I"],["Resiliente","S"],["Caprichoso(a)","C"]],
+ [["Acelerado(a)","D"],["Efusivo(a)","I"],["Zeloso(a)","S"],["Pensativo(a)","C"]],
+ [["Líder","D"],["Faz amigos fácil","I"],["Altruísta","S"],["Tradicional","C"]],
+ [["Disruptivo(a)","D"],["Sonhador(a)","I"],["Protetor(a)","S"],["Teórico(a)","C"]],
+ [["Obstinado(a)","D"],["Dramático(a)","I"],["Resistente a mudanças","S"],["Inflexível","C"]],
+ [["Direcionador(a)","D"],["Engajador(a)","I"],["Hospitaleiro(a)","S"],["Cumpridor(a) de regras","C"]],
+ [["Contundente","D"],["Gosta de holofote","I"],["Quieto(a)","S"],["Crítico(a)","C"]],
+ [["Orientado(a) a desafios","D"],["Caloroso(a)","I"],["Bom(boa) colega","S"],["Escrupuloso(a)","C"]],
+ [["Gosta de vencer","D"],["Exuberante","I"],["Carinhoso(a)","S"],["Seletivo(a)","C"]],
+ [["Cobrador(a) de resultados","D"],["Convence fácil","I"],["Evita conflitos","S"],["Desconfiado(a)","C"]],
+ [["Sem rodeios","D"],["Piadista","I"],["Previsível","S"],["Distante","C"]],
+ [["Dono(a) da situação","D"],["Positivo(a)","I"],["Pacato(a)","S"],["Sóbrio(a)","C"]],
+ [["Expedito(a)","D"],["Vivaz","I"],["Dócil","S"],["Hesitante","C"]],
+ [["Guerreiro(a)","D"],["Entrosado(a)","I"],["Benevolente","S"],["Arrumado(a)","C"]],
+ [["Controlador(a)","D"],["Disperso(a)","I"],["Rotineiro(a)","S"],["Burocrático(a)","C"]],
+ [["Impositivo(a)","D"],["Expressa emoções","I"],["Bom(boa) mediador(a)","S"],["Receoso(a)","C"]],
+ [["Insaciável","D"],["Apaixonado(a)","I"],["Doce","S"],["Reticente","C"]],
+ [["Duro(a) na negociação","D"],["Espirituoso(a)","I"],["Solícito(a)","S"],["Avaliador(a)","C"]],
+ [["Desbravador(a)","D"],["Receptivo(a)","I"],["Agradecido(a)","S"],["Revisa tudo","C"]],
+ [["Pulso firme","D"],["Charmoso(a)","I"],["Devotado(a)","S"],["Polido(a)","C"]],
+ [["Toma a frente","D"],["Contador(a) de histórias","I"],["Suave","S"],["Contido(a)","C"]],
+ [["Inconformado(a)","D"],["Mobilizador(a)","I"],["Cuidador(a)","S"],["Conservador(a)","C"]],
+ [["Executor(a)","D"],["Improvisador(a)","I"],["Assíduo(a)","S"],["Silencioso(a)","C"]]
+];
+// embaralhamento fixo por pergunta (sempre a mesma ordem)
+function embaralhar(arr,seed){const a=[...arr];let s=seed*9301+49297;for(let i=a.length-1;i>0;i--){s=(s*9301+49297)%233280;const j=Math.floor(s/233280*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const MENOS = MENOS_BASE.map((r,i)=>embaralhar(r,i+7));
+
+// Comportamento que cada palavra demonstra (aparece ao passar o mouse)
+const TIP = {
+"Constante":"Mantém o mesmo ritmo e postura no dia a dia","Assertivo(a)":"Diz o que pensa de forma clara e direta","Criterioso(a)":"Avalia com cuidado antes de aceitar algo","Comunicativo(a)":"Conversa e troca ideias com facilidade",
+"Organizado(a)":"Mantém tarefas e materiais em ordem","Carismático(a)":"Atrai a atenção e a simpatia das pessoas","Objetivo(a)":"Foca no essencial e vai direto ao ponto","Acolhedor(a)":"Faz as pessoas se sentirem bem-vindas",
+"Espontâneo(a)":"Age de forma natural, sem muito planejamento","Tolerante":"Aceita diferenças e erros dos outros com calma","Meticuloso(a)":"Confere cada etapa com atenção","Resoluto(a)":"Toma decisões e não volta atrás com facilidade",
+"Rigoroso(a)":"Segue padrões altos de qualidade","Ambicioso(a)":"Quer crescer e alcançar metas maiores","Compreensivo(a)":"Procura entender o lado do outro","Inspirador(a)":"Anima as pessoas a darem o seu melhor",
+"Ponderado(a)":"Pesa prós e contras com calma","Envolvente":"Prende a atenção das pessoas na conversa","Planejado(a)":"Organiza os passos antes de começar","Desafiador(a)":"Questiona o que está posto e propõe metas difíceis",
+"Arrojado(a)":"Arrisca para conseguir mais","Racional":"Decide com base em fatos e lógica","Simpático(a)":"Trata todos de forma agradável","Conciliador(a)":"Busca acordos quando há conflito",
+"Técnico(a)":"Domina o como fazer e valoriza o conhecimento","Estável":"Mantém o equilíbrio mesmo em mudanças","Proativo(a)":"Age antes de ser pedido","Expansivo(a)":"Mostra o que sente e ocupa espaço nas conversas",
+"Popular":"É conhecido e querido por muita gente","Minucioso(a)":"Repara nos pequenos detalhes","Confiável":"Cumpre o que promete","Prático(a)":"Resolve do jeito mais simples e rápido",
+"Atencioso(a)":"Fica atento às necessidades dos outros","Corajoso(a)":"Enfrenta situações difíceis sem recuar","Contagiante":"Passa energia e entusiasmo ao grupo","Investigativo(a)":"Busca entender a causa das coisas",
+"Formal":"Segue etiqueta e protocolos","Articulado(a)":"Se expressa bem e com clareza","Destemido(a)":"Não se intimida com riscos","Sensato(a)":"Age com bom senso e equilíbrio",
+"Tranquilo(a)":"Mantém a calma sob pressão","Prudente":"Evita riscos desnecessários","Sorridente":"Transmite bom humor no contato","Ágil":"Age e responde rápido",
+"Criativo(a)":"Tem ideias novas e originais","Pioneiro(a)":"Gosta de ser o primeiro a fazer algo","Correto(a)":"Faz as coisas do jeito certo","Pacífico(a)":"Evita brigas e preserva a harmonia",
+"Pontual":"Cumpre horários e prazos","Bom(boa) ouvinte":"Escuta com atenção antes de responder","Motivador(a)":"Incentiva os outros a seguir em frente","Focado(a) em metas":"Direciona a energia para o resultado",
+"Dedicado(a)":"Se entrega ao que faz","Incisivo(a)":"Fala de forma firme e certeira","Estruturado(a)":"Organiza ideias e processos com lógica","Eloquente":"Fala bem e convence com palavras",
+"Reflexivo(a)":"Pensa bastante antes de agir","Desinibido(a)":"Fica à vontade com pessoas novas","Comprometido(a)":"Assume e honra responsabilidades","Combativo(a)":"Luta pelo que quer e não foge de disputas",
+"Engraçado(a)":"Faz os outros rirem","Cordial":"Trata todos com educação e gentileza","Empreendedor(a)":"Cria oportunidades e põe ideias em prática","Observador(a)":"Nota o que os outros não percebem",
+"Discreto(a)":"Fala pouco de si e evita chamar atenção","Autônomo(a)":"Trabalha bem sem precisar de supervisão","Vibrante":"Transmite muita energia","Harmonioso(a)":"Mantém um clima agradável no grupo",
+"Apoiador(a)":"Ajuda e sustenta os colegas","Coerente":"Age de acordo com o que diz","Bom(boa) de conversa":"Mantém qualquer papo fluindo","Enfático(a)":"Reforça seus pontos com intensidade",
+"Influente":"Consegue mudar a opinião dos outros","Pragmático(a)":"Prioriza o que funciona na prática","Cético(a)":"Só acredita com provas","Empático(a)":"Sente e entende o que o outro sente",
+"Precavido(a)":"Se prepara para o que pode dar errado","Despretensioso(a)":"Não busca destaque para si","Tenaz":"Insiste até conseguir","Encorajador(a)":"Dá confiança para os outros tentarem",
+"Acessível":"Está sempre disponível para conversar","Imaginativo(a)":"Pensa em possibilidades e cenários novos","Comedido(a)":"Controla reações e palavras","Realizador(a)":"Transforma planos em entregas",
+"Impetuoso(a)":"Age por impulso e com força","Ameno(a)":"Tem trato suave e sem atritos","Agitado(a)":"Não para quieto, sempre em movimento","Concentrado(a)":"Mantém o foco por longos períodos",
+"Leve":"Deixa o ambiente descontraído","Profundo(a)":"Se aprofunda nos assuntos","Questionador(a)":"Pergunta o porquê das decisões","Companheiro(a)":"Está junto nos momentos bons e ruins",
+"Segue procedimentos":"Respeita o processo definido","Rápido(a) nas decisões":"Decide sem demorar","Sossegado(a)":"Prefere ritmo calmo e sem pressa","Amigável":"Faz amizade com facilidade",
+"Empolgado(a)":"Se anima com novidades","Fiel aos combinados":"Mantém o que foi acordado","Atento(a) à qualidade":"Cuida para que o resultado saia bem feito","Protagonista":"Assume o papel principal nas situações",
+"Fundamentado(a)":"Embasa opiniões em dados e argumentos","Radiante":"Transmite alegria","Ativo(a)":"Está sempre fazendo algo","Brando(a)":"Reage de forma suave",
+"Amável":"Trata as pessoas com carinho","Taxativo(a)":"Fala de forma definitiva, sem margem","Estudioso(a)":"Busca aprender e se aprofundar","Festivo(a)":"Gosta de celebrar e reunir pessoas",
+"Cheio(a) de ideias":"Gera muitas sugestões","Regrado(a)":"Segue regras e rotinas com disciplina","Gosta de rotina":"Se sente bem com o previsível","Convicto(a)":"Tem certeza das suas posições",
+"Dinâmico(a)":"Muda de atividade com rapidez e energia","Decisivo(a)":"Resolve impasses tomando a decisão","Estrategista":"Pensa nos movimentos para vencer","Intenso(a)":"Coloca muita força em tudo que faz",
+"Autoconfiante":"Acredita na própria capacidade","Visionário(a)":"Enxerga oportunidades no futuro","Acelerado(a)":"Trabalha em ritmo rápido e cobra o mesmo","Líder":"Assume a condução do grupo",
+"Disruptivo(a)":"Quebra padrões para fazer diferente","Obstinado(a)":"Não desiste, mesmo contra a maioria","Direcionador(a)":"Diz aos outros o que fazer","Contundente":"Fala com firmeza, mesmo que incomode",
+"Orientado(a) a desafios":"Se motiva com o que é difícil","Gosta de vencer":"Busca ganhar em tudo","Cobrador(a) de resultados":"Pressiona por entregas","Sem rodeios":"Fala a verdade sem suavizar",
+"Dono(a) da situação":"Assume o controle quando algo acontece","Expedito(a)":"Resolve com rapidez","Guerreiro(a)":"Enfrenta obstáculos de frente","Controlador(a)":"Quer acompanhar e decidir tudo",
+"Impositivo(a)":"Faz valer sua vontade","Insaciável":"Nunca se satisfaz com o resultado","Duro(a) na negociação":"Não cede com facilidade","Desbravador(a)":"Explora caminhos desconhecidos",
+"Pulso firme":"Mantém autoridade em situações difíceis","Toma a frente":"Se adianta para liderar","Inconformado(a)":"Não aceita as coisas como estão","Executor(a)":"Põe a mão na massa e entrega",
+"Conversador(a)":"Adora puxar e manter conversas","Interativo(a)":"Busca contato e troca o tempo todo","Esperançoso(a)":"Acredita que tudo vai dar certo","Agregador(a)":"Reúne pessoas em torno de algo",
+"Bom(boa) de palco":"Se sai bem falando em público","Inventivo(a)":"Cria soluções diferentes","Efusivo(a)":"Demonstra sentimentos com intensidade","Faz amigos fácil":"Cria vínculos rapidamente",
+"Sonhador(a)":"Imagina grandes possibilidades","Dramático(a)":"Reage com emoção forte aos acontecimentos","Engajador(a)":"Faz as pessoas participarem","Gosta de holofote":"Gosta de ser o centro das atenções",
+"Caloroso(a)":"Recebe as pessoas com entusiasmo","Exuberante":"Chama atenção por onde passa","Convence fácil":"Leva os outros para o seu lado","Piadista":"Usa o humor em quase toda situação",
+"Positivo(a)":"Enxerga o lado bom das coisas","Vivaz":"É cheio de vida e energia","Entrosado(a)":"Se enturma rápido em qualquer grupo","Disperso(a)":"Perde o foco com facilidade",
+"Expressa emoções":"Mostra o que sente abertamente","Apaixonado(a)":"Se envolve com paixão no que gosta","Espirituoso(a)":"Tem respostas rápidas e bem-humoradas","Receptivo(a)":"Está aberto a pessoas e ideias novas",
+"Charmoso(a)":"Agrada pelo jeito de ser","Contador(a) de histórias":"Explica as coisas por meio de histórias","Mobilizador(a)":"Põe as pessoas em movimento por uma causa","Improvisador(a)":"Resolve na hora, sem roteiro",
+"Educado(a)":"Trata todos com respeito e cortesia","Plácido(a)":"Permanece sereno em qualquer situação","Perseverante":"Continua no mesmo caminho com paciência","Disponível":"Está sempre pronto para ajudar",
+"Simples":"Não complica e não se exibe","Resiliente":"Se recupera bem de dificuldades","Zeloso(a)":"Cuida com carinho das coisas e das pessoas","Altruísta":"Coloca o outro à frente de si",
+"Protetor(a)":"Defende as pessoas do grupo","Resistente a mudanças":"Prefere manter o que já funciona","Hospitaleiro(a)":"Recebe bem quem chega","Quieto(a)":"Fala pouco e observa",
+"Bom(boa) colega":"Ajuda e convive bem com todos","Carinhoso(a)":"Demonstra afeto no dia a dia","Evita conflitos":"Se afasta de discussões","Previsível":"Age sempre de forma parecida",
+"Pacato(a)":"Leva as coisas com calma, sem agitação","Dócil":"Aceita orientações sem resistência","Benevolente":"Deseja e faz o bem aos outros","Rotineiro(a)":"Repete hábitos com frequência",
+"Bom(boa) mediador(a)":"Ajuda os outros a se entenderem","Doce":"Tem jeito suave e gentil","Solícito(a)":"Atende pedidos com boa vontade","Agradecido(a)":"Reconhece e valoriza o que recebe",
+"Devotado(a)":"Se dedica com fidelidade a pessoas e causas","Suave":"Fala e age com delicadeza","Cuidador(a)":"Olha pelo bem-estar dos outros","Assíduo(a)":"Está sempre presente, com regularidade",
+"Sério(a)":"Mantém postura formal e contida","Cerimonioso(a)":"Segue etiqueta à risca","Pesquisador(a)":"Busca informações antes de concluir","Autocrítico(a)":"Avalia os próprios erros com rigor",
+"Especialista":"Se aprofunda em um tema até dominá-lo","Caprichoso(a)":"Faz tudo com acabamento cuidadoso","Pensativo(a)":"Passa tempo refletindo","Tradicional":"Valoriza o jeito consagrado de fazer",
+"Teórico(a)":"Gosta de entender os conceitos por trás","Inflexível":"Não abre mão de padrões e regras","Cumpridor(a) de regras":"Segue normas sem exceção","Crítico(a)":"Aponta falhas e pontos de melhoria",
+"Escrupuloso(a)":"Tem grande cuidado em agir corretamente","Seletivo(a)":"Escolhe com critério pessoas e tarefas","Desconfiado(a)":"Duvida antes de confiar","Distante":"Mantém certa reserva nas relações",
+"Sóbrio(a)":"É contido e sem exageros","Hesitante":"Demora a se decidir","Arrumado(a)":"Mantém tudo no lugar","Burocrático(a)":"Valoriza registros e etapas formais",
+"Receoso(a)":"Teme errar ou correr riscos","Reticente":"Guarda opiniões para si","Avaliador(a)":"Analisa e julga tudo com critério","Revisa tudo":"Confere o trabalho várias vezes",
+"Polido(a)":"Fala e escreve de forma cuidadosa e educada","Contido(a)":"Segura reações e emoções","Conservador(a)":"Prefere o que é seguro e testado","Silencioso(a)":"Trabalha em silêncio e concentrado"
+};
+
+const DIM = {
+ D:{nome:"Dominante",adj:"dominante",cor:"var(--d)",
+  traco:"Tem foco em resultado, decide com rapidez e não foge de desafios.",
+  sobre:["Você gosta de resultado e de ver as coisas andarem. Diante de um problema, prefere decidir e agir a ficar esperando.",
+         "Assume o comando com naturalidade e se sente à vontade com desafios e metas altas. Fala de forma direta e espera o mesmo dos outros.",
+         "Seu ritmo rápido impulsiona o time, mas pode atropelar quem precisa de mais tempo ou de mais contexto para decidir. Lembre que nem todos respondem bem à pressão.",
+         "Sua contribuição mais valiosa é dar direção, tirar as coisas do papel e manter o grupo focado no que precisa ser entregue."],
+  resumo:{emocoes:"se irrita com lentidão e falta de resultado.",proposito:"vencer desafios e gerar resultado.",admira:"quem entrega e assume responsabilidade.",influencia:"firmeza e senso de urgência.",fortes:"decisão rápida; foco em metas.",acoes:"toma a frente; cobra resultados.",ameaca:"fica mais impositivo e impaciente.",medos:"perder o controle; ser visto como fraco.",desenvolver:"escuta; paciência com processos e pessoas."},
+  trabalho:[["Ritmo","Você prefere agilidade e decisões rápidas. Rotinas longas e muitas etapas de aprovação tiram sua energia."],["Liderança","Assume o comando quando falta direção e gosta de ter autonomia para decidir como fazer."],["Desafios","Metas difíceis te motivam. Quando tudo está fácil demais, você procura algo para melhorar ou mudar."]],
+  motiva:"Metas desafiadoras, autonomia para decidir, ver resultados concretos e rápidos, liberdade para mudar o que não funciona e reconhecimento pelo que entrega.",
+  estressa:"Lentidão, indecisão, excesso de regras e aprovações, falta de autonomia, tarefas repetitivas e pessoas que não assumem responsabilidade.",
+  pontos:[["Ouça antes de decidir","Decidir rápido é uma força, mas decisões tomadas sem ouvir o time perdem adesão.",["Pergunte a opinião de quem vai executar antes de bater o martelo.","Em reuniões, deixe os outros falarem primeiro."]],
+          ["Dose a franqueza","A clareza ajuda, mas o tom pode soar duro para quem é mais sensível.",["Comece pelo que está bom antes de apontar o que precisa mudar.","Pergunte como a pessoa recebeu o seu feedback."]],
+          ["Respeite o processo","Pular etapas acelera no curto prazo, mas costuma gerar retrabalho.",["Combine prazos realistas com o time.","Entenda o motivo de uma regra antes de contorná-la."]]],
+  int:{baixa:[["Flexível","Você se adapta às decisões do grupo sem precisar impor sua vontade. Cuidado para não abrir mão de posições importantes."],["Colaborativo(a)","Prefere construir junto a liderar sozinho. Isso fortalece o time, mas pode atrasar decisões que só você poderia tomar."],["Cauteloso(a) com riscos","Evita apostas altas e prefere caminhos seguros. Protege a empresa, mas pode limitar oportunidades."]],
+       media:[["Equilibrado(a)","Sabe assumir o comando quando é preciso, sem precisar estar sempre à frente."],["Determinado(a)","Persegue as metas com firmeza, sem atropelar o processo."],["Ponderado(a)","Avalia antes de decidir, mas não trava quando a decisão precisa sair."]],
+       alta:[["Decidido(a)","Toma decisões rápidas e assume as consequências. Cuidado para não decidir antes de ter as informações necessárias."],["Movido(a) a desafios","Metas difíceis te motivam a ir além. Cuidado para que a vontade de vencer não passe por cima das pessoas."],["Direto(a)","Fala com clareza o que pensa, e ninguém fica em dúvida sobre sua posição. Atenção ao tom."]]}},
+ I:{nome:"Influente",adj:"influente",cor:"var(--i)",
+  traco:"Comunica bem, envolve as pessoas e traz energia para o grupo.",
+  sobre:["Você se conecta com pessoas com facilidade e costuma ser lembrado pelo bom humor e pela energia. Ambientes cheios de gente nova são uma oportunidade de criar laços.",
+         "Gosta de conversar, trocar ideias e trabalhar em grupo. Seu otimismo ajuda o time a seguir em frente nos momentos difíceis, e você costuma ser o ponto de união entre as pessoas.",
+         "Seu entusiasmo é contagiante, mas pode fazer você começar muitas coisas ao mesmo tempo, confiar demais no improviso e evitar conversas difíceis por medo de desagradar.",
+         "Sua contribuição mais valiosa é gerar energia, engajamento e vontade de fazer junto."],
+  resumo:{emocoes:"expressa o que sente com facilidade.",proposito:"ser reconhecido e se conectar com pessoas.",admira:"quem é aberto, criativo e animado.",influencia:"entusiasmo e comunicação.",fortes:"relacionamento; motivação do grupo.",acoes:"conversa, envolve e anima o time.",ameaca:"fica disperso e fala mais do que ouve.",medos:"rejeição; ser ignorado.",desenvolver:"foco para concluir; dar feedbacks difíceis."},
+  trabalho:[["Entusiasmo","Você enxerga oportunidades onde outros veem problemas e transmite essa energia ao grupo."],["Comunicação","Expressa ideias com facilidade e convence pelo envolvimento, não pela imposição."],["Colaboração","Prefere trabalhar em equipe a trabalhar sozinho e gosta de criar novos contatos e parcerias."]],
+  motiva:"Reconhecimento, ambientes animados, trabalho em grupo, liberdade para criar e se expressar, conhecer pessoas novas e começar projetos.",
+  estressa:"Isolamento, rotina repetitiva, ambientes muito silenciosos, críticas públicas, excesso de detalhes e ter que dar feedbacks negativos.",
+  pontos:[["Termine o que começa","A empolgação com o novo pode deixar tarefas pela metade.",["Liste as entregas em andamento antes de assumir uma nova.","Defina um prazo de conclusão para cada projeto."]],
+          ["Encare as conversas difíceis","Evitar conflitos faz pequenos problemas crescerem.",["Trate o problema no mesmo dia em que ele aparecer.","Prepare os pontos principais antes de dar um feedback."]],
+          ["Dê espaço aos outros","Sua energia pode ocupar a conversa e calar quem é mais reservado.",["Faça perguntas e espere a resposta completa.","Em reuniões, fale por último de vez em quando."]]],
+  int:{baixa:[["Reservado(a)","Fala pouco de si e prefere ouvir. Isso transmite discrição, mas pode fazer suas ideias passarem despercebidas."],["Focado(a) na tarefa","Prefere resolver a socializar durante o trabalho. Cuidado para não parecer distante do time."],["Objetivo(a) na comunicação","Vai direto ao assunto. Ganha tempo, mas pode soar frio para quem valoriza o contato."]],
+       media:[["Sociável","Convive bem com as pessoas, sem precisar estar no centro das atenções."],["Comunicativo(a)","Expressa ideias com clareza quando é preciso."],["Otimista realista","Vê o lado bom das coisas sem ignorar os riscos."]],
+       alta:[["Inspirador(a)","Anima o time e gera engajamento. Use essa influência com responsabilidade."],["Expressivo(a)","Mostra emoções e opiniões abertamente, o que encoraja os outros a fazerem o mesmo. Cuidado para não monopolizar a conversa."],["Conector(a)","Aproxima pessoas e cria redes de contato com facilidade."]]}},
+ S:{nome:"Estável",adj:"estável",cor:"var(--s)",
+  traco:"Traz constância, escuta com atenção e cuida das relações.",
+  sobre:["Você traz calma e constância para o time. As pessoas sabem que podem contar com você.",
+         "Gosta de ambientes previsíveis, relações de confiança e de saber exatamente como pode ajudar. Escuta com atenção e evita conflitos.",
+         "Sua estabilidade é uma base para o grupo, mas pode dificultar mudanças rápidas e o posicionamento firme quando ele é necessário.",
+         "Sua contribuição mais valiosa é dar segurança, manter o ritmo e cuidar das pessoas ao seu redor."],
+  resumo:{emocoes:"contido; demonstra pouco a irritação.",proposito:"segurança e harmonia.",admira:"lealdade e cooperação.",influencia:"constância e confiança.",fortes:"paciência; apoio ao time.",acoes:"escuta, ajuda e mantém o ritmo.",ameaca:"cede para evitar conflito.",medos:"mudanças bruscas; perder a segurança.",desenvolver:"posicionamento firme; adaptação a mudanças."},
+  trabalho:[["Constância","Mantém o ritmo e a qualidade mesmo quando o cenário fica agitado."],["Cooperação","Gosta de ajudar e de ver o time funcionando junto, sem disputas."],["Segurança","Rende melhor quando sabe o que se espera de você e tem tempo para se adaptar."]],
+  motiva:"Ambientes estáveis, relações de confiança, metas claras, tempo para se adaptar às mudanças, reconhecimento sincero e trabalho em equipe.",
+  estressa:"Mudanças sem aviso, conflitos abertos, pressão por decisões rápidas, ambientes muito competitivos e falta de clareza sobre o que se espera.",
+  pontos:[["Posicione-se","Concordar para evitar atrito faz suas ideias se perderem.",["Diga sua opinião antes de ouvir a dos outros.","Lembre que discordar com respeito também é colaborar."]],
+          ["Abrace as mudanças","Resistir ao novo pode deixar você para trás.",["Peça informações cedo sobre o que vai mudar.","Teste a mudança em pequena escala antes de julgar."]],
+          ["Aprenda a dizer não","Ajudar todo mundo pode sobrecarregar você.",["Avalie sua agenda antes de aceitar um pedido.","Ofereça uma alternativa quando não puder ajudar."]]],
+  int:{baixa:[["Inquieto(a) com a rotina","Busca variedade e se cansa do repetitivo. Isso traz movimento, mas dificulta tarefas longas."],["Voltado(a) para mudanças","Gosta de novidade e se adapta rápido. Cuidado para não descartar o que já funciona."],["Impaciente","Quer as coisas para ontem. A pressa pode gerar decisões precipitadas."]],
+       media:[["Adaptável","Lida bem tanto com mudanças quanto com rotina."],["Colaborador(a)","Ajuda quando é necessário, sem deixar suas entregas de lado."],["Calmo(a) sob pressão","Mantém a serenidade na maior parte das situações."]],
+       alta:[["Constante","Mantém o ritmo e a qualidade ao longo do tempo. Cuidado com a resistência a mudanças."],["Leal","É fiel às pessoas e aos compromissos assumidos."],["Paciente","Respeita o tempo dos outros e escuta com atenção. Cuidado para não adiar decisões."]]}},
+ C:{nome:"Cauteloso",adj:"cautelosa",cor:"var(--c)",
+  traco:"Analisa com cuidado, segue critérios e preza pela qualidade.",
+  sobre:["Você valoriza precisão, qualidade e fazer as coisas do jeito certo.",
+         "Antes de agir, prefere entender o problema e reunir informações. Segue critérios e percebe detalhes que os outros deixam passar.",
+         "Seu cuidado evita erros, mas a busca pelo ideal pode atrasar decisões e soar crítica demais para o time.",
+         "Sua contribuição mais valiosa é garantir qualidade, organização e decisões bem fundamentadas."],
+  resumo:{emocoes:"reservado; controla o que demonstra.",proposito:"qualidade e precisão.",admira:"competência técnica e coerência.",influencia:"dados, lógica e argumentos.",fortes:"análise; atenção a detalhes.",acoes:"planeja, confere e organiza.",ameaca:"fica mais crítico e se isola.",medos:"errar; ser criticado pelo trabalho.",desenvolver:"agilidade para decidir; flexibilidade com padrões."},
+  trabalho:[["Qualidade","Entrega trabalho bem feito e percebe falhas antes que virem problemas."],["Análise","Decide com base em dados e prefere ter tempo para estudar o assunto."],["Organização","Gosta de processos claros, regras definidas e expectativas bem explicadas."]],
+  motiva:"Regras e expectativas claras, tempo para fazer bem feito, acesso a dados e informações, autonomia técnica e reconhecimento pela qualidade.",
+  estressa:"Prazos apertados sem informação suficiente, mudanças de última hora, desorganização, críticas ao seu trabalho e decisões tomadas no impulso.",
+  pontos:[["Decida com o que tem","Esperar a informação perfeita atrasa o time.",["Defina um prazo para a análise e decida ao final dele.","Pergunte qual é o risco real de errar."]],
+          ["Flexibilize padrões","Nem toda entrega precisa ser perfeita.",["Combine com o gestor o nível de qualidade esperado.","Separe o que é essencial do que é desejável."]],
+          ["Compartilhe seu raciocínio","Ficar calado faz o time não entender suas decisões.",["Explique o porquê das suas recomendações.","Traga críticas sempre junto com sugestões."]]],
+  int:{baixa:[["Independente das regras","Questiona normas e prefere fazer do seu jeito. Gera inovação, mas pode gerar atrito com processos."],["Generalista","Olha o todo e não se prende a detalhes. Cuidado com erros que passam despercebidos."],["Intuitivo(a)","Decide mais pelo instinto do que pelos dados. Funciona bem na urgência, mas arrisca em decisões complexas."]],
+       media:[["Organizado(a)","Segue processos sem engessar o trabalho."],["Atento(a)","Confere o que é importante sem travar o ritmo."],["Prático(a) com regras","Respeita normas, mas sabe quando flexibilizar."]],
+       alta:[["Criterioso(a)","Avalia com cuidado antes de aceitar algo. Cuidado para não analisar demais e não agir."],["Preciso(a)","Busca exatidão em cada entrega."],["Exigente com qualidade","Não se contenta com o mediano. Cuidado com expectativas irreais para si e para o time."]]}}
+};
+const ORDEM=["D","I","S","C"];
+const PERFIS={"":"Versátil",D:"Impulsionador",I:"Conector",S:"Sustentador",C:"Analista",
+ "D-I":"Mobilizador","I-D":"Articulador","D-S":"Construtor","S-D":"Perseverante","D-C":"Estrategista","C-D":"Arquiteto",
+ "I-S":"Acolhedor","S-I":"Conciliador","I-C":"Consultor","C-I":"Educador","S-C":"Guardião","C-S":"Metódico"};
+const ROTULOS=[["emocoes","Emoções"],["proposito","Propósito"],["admira","Admira"],["influencia","Influência"],["fortes","Pontos fortes"],["acoes","Ações frequentes"],["ameaca","Sob ameaça"],["medos","Medos"],["desenvolver","A desenvolver"]];
+
+function segmento(d){
+  if(d>=9)return 7; if(d>=5)return 6; if(d>=2)return 5;
+  if(d>=-1)return 4; if(d>=-4)return 3; if(d>=-8)return 2; return 1;
+}
+const faixa=s=>s<=2?"baixa":s<=4?"media":"alta";
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let atual=-1;
+// Dados do colaborador: virão da plataforma interna (integração feita pelos desenvolvedores)
+let pessoa={nome:"Nome do colaborador",cargo:"Cargo",area:"Área"};
+let resp=Q.map(()=>({mais:null,menos:null}));
+const app=document.getElementById("app");
+const aleatorio=()=>Q.map(()=>({mais:Math.floor(Math.random()*4),menos:Math.floor(Math.random()*4)}));
+
+function render(){
+  if(atual<0) return telaInicio();
+  if(atual>=Q.length) return telaResultado();
+  telaPergunta();
+}
+
+function telaInicio(){
+  app.innerHTML=`
+    <h1>Mapeamento comportamental</h1>
+    <p>São 28 perguntas rápidas. Em cada uma, escolha a palavra com que você <b>mais</b> se identifica e a palavra com que <b>menos</b> se identifica.</p>
+    <p class="muted">Não existe resposta certa. Responda pensando em como você age no trabalho, não em como gostaria de agir. Passe o mouse sobre uma palavra para ver o comportamento que ela representa. Leva cerca de 10 minutos.</p>
+    <div class="row">
+      <button class="btn" id="go">Começar</button>
+      <button class="btn ghost" id="demo">Ver exemplo com respostas aleatórias</button>
+    </div>`;
+  document.getElementById("go").onclick=()=>{atual=0;render()};
+  document.getElementById("demo").onclick=()=>{resp=aleatorio();atual=Q.length;render()};
+}
+
+function telaPergunta(){
+  const r=resp[atual];
+  const btns=(tipo)=>(tipo==="mais"?Q[atual]:MENOS[atual]).map(([p],i)=>{
+    const sel=r[tipo]===i, tip=TIP[p]||"";
+    return `<button class="opt ${sel?"sel-"+tipo:""}" data-t="${tipo}" data-i="${i}" data-tip="${tip}" aria-label="${p}: ${tip}" aria-pressed="${sel}">${p}</button>`;
+  }).join("");
+  app.innerHTML=`
+    <div class="progress"><i style="width:${(atual/Q.length)*100}%"></i></div>
+    <div class="qnum">Pergunta <b>${atual+1}</b> de ${Q.length}</div>
+    <div class="label">Com qual palavra você <b>mais</b> se identifica?</div>
+    <div class="opts">${btns("mais")}</div>
+    <div class="label">Com qual palavra você <b>menos</b> se identifica?</div>
+    <div class="opts">${btns("menos")}</div>
+    <div class="err" id="err"></div>
+    <div class="nav">
+      <button class="btn ghost" id="prev">Anterior</button>
+      <button class="btn" id="next">${atual===Q.length-1?"Ver meu resultado":"Próxima"}</button>
+    </div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{r[b.dataset.t]=+b.dataset.i;render()});
+  document.getElementById("prev").onclick=()=>{atual--;render()};
+  document.getElementById("next").onclick=()=>{
+    if(r.mais===null||r.menos===null){document.getElementById("err").textContent="Escolha uma palavra em cada linha para continuar.";return}
+    atual++;render();window.scrollTo(0,0);
+  };
+}
+
+function calcular(){
+  const m={D:0,I:0,S:0,C:0}, l={D:0,I:0,S:0,C:0};
+  resp.forEach((r,i)=>{m[Q[i][r.mais][1]]++; l[MENOS[i][r.menos][1]]++;});
+  const res={};
+  ORDEM.forEach(k=>{const d=m[k]-l[k];res[k]={mais:m[k],menos:l[k],dif:d,seg:segmento(d)}});
+  const rank=[...ORDEM].sort((a,b)=>res[b].seg-res[a].seg||res[b].dif-res[a].dif||ORDEM.indexOf(a)-ORDEM.indexOf(b));
+  const altas=rank.filter(k=>res[k].seg>=5).slice(0,2);
+  return{res,principal:rank[0],altas,perfil:PERFIS[altas.join("-")]};
+}
+
+function telaResultado(){
+  const {res,principal,altas,perfil}=calcular();
+  const P=DIM[principal];
+  const ini=pessoa.nome.split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0].toUpperCase()).join("");
+  const data=new Date().toLocaleDateString("pt-BR");
+  let sobrePerfil;
+  if(!altas.length) sobrePerfil=`<p>Nenhuma dimensão se destacou acima da média. Você transita bem entre diferentes estilos e adapta seu comportamento ao que cada situação pede.</p><p>Essa versatilidade é uma força, mas pode fazer os outros terem dificuldade de prever como você vai reagir.</p>`;
+  else if(altas.length===1) sobrePerfil=`<p>O perfil ${perfil} tem a dimensão ${DIM[altas[0]].nome.toLowerCase()} como marca principal. ${DIM[altas[0]].traco}</p><p>${DIM[altas[0]].sobre[1]}</p>`;
+  else sobrePerfil=`<p>O perfil ${perfil} combina as dimensões ${DIM[altas[0]].nome.toLowerCase()} e ${DIM[altas[1]].nome.toLowerCase()}, nessa ordem de intensidade.</p><p>${DIM[altas[0]].traco} ${DIM[altas[1]].traco}</p><p>${DIM[altas[0]].sobre[2]}</p>`;
+
+  app.innerHTML=`
+    <div class="info">
+      <div class="who">
+        <div class="avatar">${esc(ini||"?")}</div>
+        <div><b>${esc(pessoa.nome)}</b><span>${esc(pessoa.cargo)}</span><span>${esc(pessoa.area)}</span></div>
+      </div>
+      <div class="when">Data de realização do mapeamento:<span>${data}</span></div>
+    </div>
+
+    <div class="resbox">
+      <p>O resultado do mapeamento é</p>
+      <div class="two"><strong>Perfil<br>${perfil}</strong><strong>Dimensão<br>${P.adj}</strong></div>
+    </div>
+
+    <h2>Sobre o perfil: ${perfil}</h2>
+    ${sobrePerfil}
+
+    <h3 class="sub">Resumo do perfil</h3>
+    <div class="resumo">${ROTULOS.map(([k,t])=>`<div class="rrow"><b>${t}</b><span>${P.resumo[k]}</span></div>`).join("")}</div>
+
+    <h2>Perfil no local de trabalho</h2>
+    ${P.trabalho.map(([t,x])=>`<h3>${t}</h3><p>${x}</p>`).join("")}
+    <div class="grid2 boxes">
+      <div class="box"><h3>Motivadores</h3><p>${P.motiva}</p></div>
+      <div class="box"><h3>Estressores</h3><p>${P.estressa}</p></div>
+    </div>
+
+    <h2>Sobre a dimensão: ${P.adj}</h2>
+    ${P.sobre.map(x=>`<p>${x}</p>`).join("")}
+
+    <h2>Pontos para desenvolver</h2>
+    <p>Para apoiar seu desenvolvimento comportamental, sugerimos três habilidades.</p>
+    ${P.pontos.map(([t,x,b])=>`<h3>${t}</h3><p>${x}</p><ul>${b.map(i=>`<li>${i}</li>`).join("")}</ul>`).join("")}
+
+    <h2>Gráfico DISC</h2>
+    <div class="chart" role="img" aria-label="Gráfico DISC">
+      <div class="axis">${[1,2,3,4,5,6,7].map(n=>`<span>${n}</span>`).join("")}</div>
+      ${ORDEM.map(k=>`<div class="col"><div class="mid"></div><div class="bar" data-h="${res[k].seg/7*100}" style="height:0;background:${DIM[k].cor}">${Math.round(res[k].seg/7*100)}%</div></div>`).join("")}
+    </div>
+    <div class="legend"><span></span>${ORDEM.map(k=>`<span>${k}<small>${DIM[k].nome}</small></span>`).join("")}</div>
+    <div class="segrow"><span>Nível de intensidade</span>${ORDEM.map(k=>`<b>${res[k].seg}</b>`).join("")}</div>
+
+    <h2>Dimensões e suas intensidades</h2>
+    ${ORDEM.map(k=>`<h3 class="dimh"><span style="color:${DIM[k].cor}">${Math.round(res[k].seg/7*100)}%</span> ${DIM[k].nome}</h3>
+      ${DIM[k].int[faixa(res[k].seg)].map(([a,t])=>`<p><b>${a}:</b> ${t}</p>`).join("")}`).join("")}
+
+    <details class="calc"><summary>Como o cálculo chegou aqui</summary>
+    <div class="scroll"><table>
+      <thead><tr><th>Dimensão</th><th>Mais</th><th>Menos</th><th>Diferença</th><th>Nota (1–7)</th></tr></thead>
+      <tbody>${ORDEM.map(k=>`<tr><td>${k} — ${DIM[k].nome}</td><td>${res[k].mais}</td><td>${res[k].menos}</td><td>${res[k].dif>0?"+":""}${res[k].dif}</td><td><b>${res[k].seg}</b></td></tr>`).join("")}</tbody>
+    </table></div></details>
+
+    <p class="note">Protótipo para validação interna. Textos, nomes de perfil e faixas de nota são exemplos e devem ser revisados pelo RH antes do uso.</p>
+    <div class="row">
+      <button class="btn" id="again">Refazer o mapeamento</button>
+      <button class="btn ghost" id="demo2">Gerar outro exemplo aleatório</button>
+    </div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>app.querySelectorAll(".bar").forEach(b=>b.style.height=b.dataset.h+"%")));
+  document.getElementById("again").onclick=()=>{resp=Q.map(()=>({mais:null,menos:null}));atual=-1;render();window.scrollTo(0,0)};
+  document.getElementById("demo2").onclick=()=>{resp=aleatorio();render();window.scrollTo(0,0)};
+}
+
+render();
+</script>
+</body>
+</html>
